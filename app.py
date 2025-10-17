@@ -13,7 +13,7 @@ st.title("Placement Data Analytics Dashboard - B. Ganesh Goud")
 # 📂 Load CSV
 # -----------------------------
 # Automatically detect CSV path relative to this script
-csv_path = os.path.join(os.path.dirname(__file__), "../data.csv")  # go up one folder
+csv_path = os.path.join(os.path.dirname(__file__), "./data.csv")  # go up one folder
 if not os.path.exists(csv_path):
     st.error(f"❌ CSV file not found at {csv_path}")
     st.stop()
