@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # -----------------------------
 # Page Configuration
@@ -11,10 +12,13 @@ st.title("Placement Data Analytics Dashboard - B. Ganesh Goud")
 # -----------------------------
 # 📂 Load CSV
 # -----------------------------
-csv_path = r"C:\Users\GANESH\Downloads\NNRG_Placement_2018_2025.csv"
-df = pd.read_csv(csv_path, encoding='latin1')
+# Automatically detect CSV path relative to this script
+csv_path = os.path.join(os.path.dirname(__file__), "../data.csv")  # go up one folder
+if not os.path.exists(csv_path):
+    st.error(f"❌ CSV file not found at {csv_path}")
+    st.stop()
 
-# Optional: Show first 5 rows
+df = pd.read_csv(csv_path, encoding='latin1')
 st.success("✅ Dataset loaded successfully!")
 st.write(df.head())
 
@@ -78,18 +82,15 @@ with col3:
 
 st.markdown("---")
 
-
 # -----------------------------
 # Year-wise Line Chart & Bar Chart
 # -----------------------------
 st.subheader("Year-wise Placement Trends")
 col1, col2 = st.columns(2)
 
-# Prepare DataFrame for line/bar chart
 year_df = filtered_df['Year'].value_counts().sort_index().reset_index()
 year_df.columns = ['Year', 'Placements']
 
-# Line Chart
 fig_line = px.line(
     year_df,
     x='Year',
@@ -100,7 +101,6 @@ fig_line = px.line(
 )
 col1.plotly_chart(fig_line, use_container_width=True)
 
-# Bar Chart
 fig_bar = px.bar(
     year_df,
     x='Year',
@@ -120,9 +120,9 @@ st.markdown("---")
 st.subheader("Branch-wise Placement Overview")
 col1, col2 = st.columns(2)
 
-# Pie Chart
 branch_counts = filtered_df['Branch'].value_counts().reset_index()
 branch_counts.columns = ['Branch', 'Count']
+
 fig_pie = px.pie(
     branch_counts,
     names='Branch',
@@ -132,7 +132,6 @@ fig_pie = px.pie(
 )
 col1.plotly_chart(fig_pie, use_container_width=True)
 
-# Treemap
 fig_treemap = px.treemap(
     branch_counts,
     path=['Branch'],
